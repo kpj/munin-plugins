@@ -11,12 +11,13 @@ base="/sys/devices/system/cpu/"
 case $1 in
     config)
         echo "graph_title CPU Frequencies"
+        echo "graph_info Show CPU frequencies"
         echo "graph_vlabel frequency [Hz]"
         echo "graph_scale no"
         echo "graph_category system"
 
         for ((i=0;i<=cpu_num-1;i++)); do
-            echo "cpu$i.label CPU_$((i+1))"
+            echo "cpu$i.label CPU $((i+1))"
             echo "cpu$i.min $(cat $base/cpu$i/cpufreq/cpuinfo_min_freq)"
             echo "cpu$i.max $(cat $base/cpu$i/cpufreq/cpuinfo_max_freq)"
         done
