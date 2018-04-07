@@ -13,7 +13,6 @@ case $1 in
         echo "graph_title CPU Frequencies"
         echo "graph_info Show CPU frequencies"
         echo "graph_vlabel frequency [Hz]"
-        echo "graph_scale no"
         echo "graph_category system"
 
         for ((i=0;i<=cpu_num-1;i++)); do
@@ -21,6 +20,9 @@ case $1 in
             echo "cpu$i.min $(cat $base/cpu$i/cpufreq/cpuinfo_min_freq)"
             echo "cpu$i.max $(cat $base/cpu$i/cpufreq/cpuinfo_max_freq)"
         done
+
+        max_freq=$(cat $base/cpu0/cpufreq/cpuinfo_max_freq)
+        echo "graph_args --base 1000 -l 0 -u $max_freq"
 
         exit 0
     ;;
