@@ -5,6 +5,7 @@ A collection of custom munin-plugins following best-practices.
 ## Plugins
 
 * `cpufreq`: Measure frequencies of all available CPUs
+* `process_cpu_usage`: Measure CPU usage of most intensive processes
 
 ## References
 
