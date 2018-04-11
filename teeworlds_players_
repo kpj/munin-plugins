@@ -1,0 +1,71 @@
+#!/usr/bin/perl
+# #%# family=contrib
+
+use strict;
+use warnings;
+
+use IO::Socket;
+
+
+# parse host/port
+my @inp = split("_", $0);
+my ($host, $port) = split(":", $inp[-1]);
+
+# helper function
+sub get_server_info {
+    my ($host, $port) = @_;
+
+    # create socket
+    my $sock = IO::Socket::INET->new(
+        Proto    => 'udp',
+        PeerPort => $port,
+        PeerAddr => $host,
+    ) or die "Could not create socket: $!\n";
+
+    # request server-info data
+    my $req = "\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\x67\x69\x65\x33\x67";
+    $sock->send($req);
+
+    # retrieve response
+    my $resp = "";
+    $sock->recv($resp, 200);
+    my @parts = split("\0", $resp);
+
+    # parse response
+    my %info;
+    $info{"version"} = $parts[1];
+    $info{"name"} = $parts[2];
+    $info{"map"} = $parts[3];
+    $info{"gametype"} = $parts[4];
+    $info{"players_online"} = $parts[6];
+    $info{"max_players_online"} = $parts[7];
+    $info{"players_spectating"} = $parts[8] - $parts[6];
+
+    return %info;
+}
+
+
+# handle munin config
+if (defined $ARGV[0] and $ARGV[0] eq "config") {
+    my %info = get_server_info($host, $port);
+
+    print "graph_title Teeworlds server info ($host:$port)\n";
+    print "graph_info Show player statistics for given server\n";
+    print "graph_vlabel player count\n";
+    print "graph_scale no\n";
+    print "graph_category teeworlds\n";
+    print "graph_args -l 0\n";
+
+    print "players.label online\n";
+    print "spectators.label spectating\n";
+
+    exit 0;
+}
+
+
+# print measured values
+my %info = get_server_info($host, $port);
+#print "$_: $info{$_}\n" for (keys %info);
+
+print "players.value $info{'players_online'} \n";
+print "spectators.value $info{'players_spectating'} \n";

@@ -6,6 +6,7 @@ A collection of custom munin-plugins following best-practices.
 
 * `cpufreq`: Measure frequencies of all available CPUs
 * `process_cpu_usage`: Measure CPU usage of most intensive processes
+* `teeworlds_players_<host>:<port>`: Measure number of players on Teeworlds server
 
 ## References
 
