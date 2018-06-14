@@ -12,6 +12,7 @@ env.folders INBOX
 
 =cut
 
+
 use strict;
 
 use Net::IMAP::Client;
@@ -46,11 +47,11 @@ if (defined $ARGV[0] and $ARGV[0] eq "config") {
 ## print values
 # login
 my $imap = Net::IMAP::Client->new(
-    server          => 'imap.gmail.com',
-    user            => $ENV{'email'},
-    pass            => $ENV{'password'},
-    ssl             => 1,
-    port            => 993
+    server  => 'imap.gmail.com',
+    user    => $ENV{'email'},
+    pass    => $ENV{'password'},
+    ssl     => 1,
+    port    => 993
 ) or die 'Could not connect to IMAP server: ' . $_;
 
 $imap->login or die('Login failed: ' . $imap->last_error);
