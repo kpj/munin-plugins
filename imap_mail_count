@@ -1,0 +1,66 @@
+#!/usr/bin/env perl
+
+=head1 Example configuration
+
+[imap_mail_count]
+env.email kpj
+env.password hunter2
+env.folders INBOX
+
+#%# family=manual
+#%# family=contrib
+
+=cut
+
+use strict;
+
+use Net::IMAP::Client;
+
+
+my @requested_folders = exists $ENV{'folders'} ? split(' ', $ENV{'folders'}) : ('INBOX');
+
+# assert needed information is available
+if (not exists $ENV{'email'}) {
+    die "No username set in config";
+}
+if (not exists $ENV{'password'}) {
+    die "No password set in config";
+}
+
+## handle munin config
+if (defined $ARGV[0] and $ARGV[0] eq "config") {
+    print "graph_title Unread email count\n";
+    print "graph_info Display the number of unread emails on given IMAP server\n";
+    print "graph_vlabel email count\n";
+    print "graph_scale no\n";
+    print "graph_category other\n";
+    print "graph_args -l 0\n";
+
+    for my $fold (@requested_folders) {
+        print "$fold.label $fold\n";
+    }
+
+    exit 0;
+}
+
+## print values
+# login
+my $imap = Net::IMAP::Client->new(
+    server          => 'imap.gmail.com',
+    user            => $ENV{'email'},
+    pass            => $ENV{'password'},
+    ssl             => 1,
+    port            => 993
+) or die 'Could not connect to IMAP server: ' . $_;
+
+$imap->login or die('Login failed: ' . $imap->last_error);
+
+# retrieve unread message numbers
+for my $fold ($imap->folders) {
+    next if not grep(/^$fold/, @requested_folders);
+
+    my $status = $imap->status($fold);
+    next if length($status) == 0;
+
+    print("$fold.value $status->{UNSEEN}\n");
+}
