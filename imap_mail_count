@@ -51,7 +51,7 @@ my $imap = Mail::IMAPClient->new(
     user        => $ENV{'email'},
     password    => $ENV{'password'},
     ssl         => 1
-) or die 'Could not connect to IMAP server: ' . $_;
+) or die "Could not connect to IMAP server: $@";
 
 # retrieve unread message numbers
 foreach my $f ($imap->folders) {
