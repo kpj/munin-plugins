@@ -15,8 +15,7 @@ env.folders INBOX
 
 use strict;
 
-use Net::IMAP::Client;
-
+use Mail::IMAPClient;
 
 my @requested_folders = exists $ENV{'folders'} ? split(' ', $ENV{'folders'}) : ('INBOX');
 
@@ -45,23 +44,17 @@ if (defined $ARGV[0] and $ARGV[0] eq "config") {
 }
 
 ## print values
-# login
-my $imap = Net::IMAP::Client->new(
-    server  => 'imap.gmail.com',
-    user    => $ENV{'email'},
-    pass    => $ENV{'password'},
-    ssl     => 1,
-    port    => 993
+# connect to server
+my $imap = Mail::IMAPClient->new(
+    server      => 'imap.gmail.com',
+    port        => 993,
+    user        => $ENV{'email'},
+    password    => $ENV{'password'},
+    ssl         => 1
 ) or die 'Could not connect to IMAP server: ' . $_;
 
-$imap->login or die('Login failed: ' . $imap->last_error);
-
 # retrieve unread message numbers
-for my $fold ($imap->folders) {
-    next if not grep(/^$fold/, @requested_folders);
-
-    my $status = $imap->status($fold);
-    next if length($status) == 0;
-
-    print("$fold.value $status->{UNSEEN}\n");
+foreach my $f ($imap->folders) {
+    next if not grep(/^$f/, @requested_folders);
+    print("$f.value " . $imap->unseen_count($f) . "\n");
 }
