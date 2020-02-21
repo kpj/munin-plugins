@@ -1,0 +1,44 @@
+#!/bin/bash
+
+
+# #%# capabilities=autoconf
+# #%# family=contrib
+
+
+# How to setup the respective systemctl timer/service:
+#  ln -s $PWD/speedtest.service /etc/systemd/system/
+#  systemctl enable --now $PWD/speedtest.timer
+
+
+case $1 in
+    config)
+        echo "graph_title Speedtest"
+        echo "graph_info Internet Connection Speed Overview"
+        echo "graph_vlabel DL / UL"
+        echo "graph_scale no"
+        echo "graph_category network"
+        echo "graph_args --base 1000 -l 0 -r"
+
+        echo "down.label DL"
+        echo "up.label UL"
+
+        exit 0
+    ;;
+    autoconf)
+        echo yes
+        exit 0
+    ;;
+esac
+
+
+speedtest_fname="/tmp/speedtest.out"
+
+if [ ! -f "$speedtest_fname" ]; then
+    exit 1
+fi
+
+down_speed=$(grep Download "$speedtest_fname" | sed 's/[a-zA-Z:]* \([0-9]*\.[0-9]*\) [a-zA-Z/]*/\1/')
+up_speed=$(grep Upload "$speedtest_fname" | sed 's/[a-zA-Z:]* \([0-9]*\.[0-9]*\) [a-zA-Z/]*/\1/')
+
+echo "down.value $down_speed"
+echo "up.value $up_speed"

@@ -1,0 +1,7 @@
+[Unit]
+Description=Speedtest job
+
+[Service]
+Type=oneshot
+ExecStart=speedtest-cli --simple
+StandardOutput=file:/tmp/speedtest.out

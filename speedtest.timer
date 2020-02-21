@@ -1,0 +1,9 @@
+[Unit]
+Description=Speedtest timer
+
+[Timer]
+OnBootSec=1h
+OnUnitActiveSec=1h
+
+[Install]
+WantedBy=timers.target
