@@ -37,8 +37,8 @@ if [ ! -f "$speedtest_fname" ]; then
     exit 1
 fi
 
-down_speed=$(grep Download "$speedtest_fname" | sed 's/[a-zA-Z:]* \([0-9]*\.[0-9]*\) [a-zA-Z/]*/\1/')
-up_speed=$(grep Upload "$speedtest_fname" | sed 's/[a-zA-Z:]* \([0-9]*\.[0-9]*\) [a-zA-Z/]*/\1/')
+down_speed=$(grep -a Download "$speedtest_fname" | sed 's/[a-zA-Z:]* \([0-9]*\.[0-9]*\) [a-zA-Z/]*/\1/')
+up_speed=$(grep -a Upload "$speedtest_fname" | sed 's/[a-zA-Z:]* \([0-9]*\.[0-9]*\) [a-zA-Z/]*/\1/')
 
 echo "down.value $down_speed"
 echo "up.value $up_speed"
