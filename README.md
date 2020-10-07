@@ -16,6 +16,7 @@ $ ./install.sh
 * `cpufreq`: Measure frequencies of all available CPUs
 * `imap_mail_count`: Measure number of unread emails
 * `process_cpu_usage`: Measure CPU usage of most intensive processes
+* `speedtest`: Measure internet connection bandwidth
 * `teeworlds_players_<host>:<port>`: Measure number of players on Teeworlds server
 
 
