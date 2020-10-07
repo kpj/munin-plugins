@@ -14,13 +14,13 @@ case $1 in
     config)
         echo "graph_title Speedtest"
         echo "graph_info Internet Connection Speed Overview"
-        echo "graph_vlabel DL / UL"
+        echo "graph_vlabel Speed"
         echo "graph_scale no"
         echo "graph_category network"
         echo "graph_args --base 1000 -l 0 -r"
 
-        echo "down.label DL"
-        echo "up.label UL"
+        echo "down.label download"
+        echo "up.label upload"
 
         exit 0
     ;;
